@@ -1,11 +1,13 @@
 
 
+
 class ProductManager {
 
 
     constructor() {
 
         this.Product = []
+        
     }
 
     getNextProductId = () => {
@@ -23,18 +25,25 @@ class ProductManager {
 
     }
 
-    getProduct = () => { return this.Product }
+    getProduct = () => {
+
+      
+         return this.Product 
+
+    }
 
     getProductById = (productId) => {
 
         const idEncontrado = this.Product.find(element => element.id == productId)
 
         if (idEncontrado) {
-            console.log("el producto encontrado es: " , idEncontrado.title)
+            console.log("el producto encontrado es: ", idEncontrado.title)
         } else {
             console.log("Not Found")
         }
     }
+
+    // TRAER LOS PRODUCTOS DESDE EL OBJETO JSON - THIS.PATH
 
     addProduct = (title, description, price, thumbnail, code, stock) => {
 
@@ -70,12 +79,7 @@ product.addProduct("Gea", "Budin coco", 400, "image", "code2", "5")
 product.addProduct("Zeus", "Budin frutos rojos", 500, "image", "code3", "5")
 product.addProduct("Venus", "Budin banana", 300, "image", "code4", "5")
 
-
-
-
 product.getProductById(3)
 product.getProductById(6)
-
-
 
 console.log(product.Product);
