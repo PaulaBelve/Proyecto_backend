@@ -7,128 +7,146 @@ class ProductManager {
 
         this.path = path
     }
-}
 
-getProducts = async () => {
+    getProducts = async () => {
 
-    if (fs.existsSync(this.path)) {
-        console.log("The file already exists");
-        let readFile = await fs.promises.readFile(this.path, "utf-8");
-        let guardarFile = JSON.parse(readFile) // Pasar el el string a Json
-        return guardarFile
-    } else {
-        return []; //Retorna un array vacio
+        if (fs.existsSync(this.path)) {
+            console.log("el archivo existe");
+            let readFile = await fs.promises.readFile(this.path, "utf-8");
+            let guardarFile = JSON.parse(readFile) // Pasar el el string a Json
+            return guardarFile
+        } else {
+            return []; //Retorna un array vacio
+        }
+
+
     }
 
 
-}
-// TRAER LOS PRODUCTOS DESDE EL OBJETO JSON - THIS.PATH
+    getNexId = list => {
 
-/*addProducts = async (title, description, price, thumbnail, code, stock) => {
+        const count = list.length
 
-        if ((title, description, price, thumbnail, code, stock)) {
+        return (count > 0) ? list[count - 1].id + 1 : 1
+
+
+    }
+
+    writeFile = list => {
+
+        return fs.promises.writeFile(this.path, JSON.stringify(list))
+    }
+
+
+    addProduct = async (obj) => {
+
+        const list = await this.getProducts()
+
+        const id = this.getNexId(list)
+        obj.id = id
+
+        list.push(obj)
+
+        await this.writeFile(list)
+
+
+    }
+
+    getProductById = async (id) => {
 
         if (fs.existsSync(this.path)) {
+
             let readFile = await fs.promises.readFile(this.path, "utf-8");
             let guardarFile = JSON.parse(readFile)
 
-            const codeDuplicado = guardarFile.find((e) => e.code == code);
+            const idEncontrado = guardarFile.find((path) => path.id == id)
+            idEncontrado
+            console.log('Se ha encontrado el producto:', idEncontrado)
 
-            if (codeDuplicado) {
-
-                console.log('el code ya existe')
-
-            } else {
-
-                if (guardarFile.length > 0) {
-
-                    let idProducto = guardarFile[guardarFile.length - 1].id + 1
-
-                    const nuevoProducto = {
-                        id: idProducto,
-                        title,
-                        description,
-                        price,
-                        thumbnail,
-                        code,
-                        stock
-
-                    }
-
-                    guardarFile.push(nuevoProducto);
-                   
-
-                    await fs.promises.writeFile(
-                        this.path,
-                        JSON.stringify(guardarFile, null, 2)
-                    )
-                };
-
-
-            }};
-         };
-}
-
-getProductById = async (id) => {
-
-    if(fs.existsSync(this.path)) {
-
-        let readFile = await fs.promises.readFile(this.path, "utf-8");
-        let guardarFile = JSON.parse(readFile)
-
-        const idEncontrado = guardarFile.find((path) => path.id == id)
-        idEncontrado
-        console.log('Se ha encontrado el producto:', idEncontrado)
-        
-    } else {
-        console.log("Not Found, el producto no ha sido encontrado")
+        } else {
+            console.log("Not Found, el producto no ha sido encontrado")
+        }
     }
-} */
 
 
 
-const budines = new ProductManager('./DB.Json')
+    updateProduct = async (id, obj) => {
+
+        if ((id, obj)) {
+
+            if (fs.existsSync(this.path)) {
+
+                let readFile = await fs.promises.readFile(this.path, "utf-8");
+                let guardarFile = JSON.parse(readFile)
+
+                const idActualizado = guardarFile.find((path) => path.id == id)
+                if (idActualizado) {
+
+                    const list = guardarFile.map((path) => {
+
+                        if (path.id == id) {
+                            return { ...path, ...obj }
+
+                        }
+                        return path
+
+                    })
+                    await this.writeFile(list, null, 2)
+
+                } else {console.log ('el id a actualizar no se ha encontrado')}
+            } else {console.log ('no se encuentra el producto para agregar')}
+
+        }
+    }
+
+    deleteProduct = async (id) => {
+
+        if (fs.existsSync(this.path)) {
+
+            if (id) {
+                let readFile = await fs.promises.readFile(this.path, "utf-8");
+                let guardarFile = JSON.parse(readFile)
+                const eliminarProducto = guardarFile.splice((id) => 3, 1)
+                const list = eliminarProducto
+
+                await this.writeFile(list)
+
+                console.log('Se ha eliminado el producto')
+
+            } else { console.log('no se ha podido eliminar el producto') }
 
 
-console.log(budines);
+        }
+        else {
+            console.log('el array se encuentra vacio para eliminar un producto')
 
-getProducts();
+        }
 
-
-
-
-
-/*let guardarProductos = async () => {
-
-    const primerProducto = await product.addProducts({
-
-        title: "Apollo",
-        description: "Budin chocolate",
-        price: 300,
-        thumbnail: "imagen",
-        code: "code1",
-        stock: 5
-    });
-
-    console.log({ primerProducto });
-
-    const segundoProducto = await product.addProducts({
-
-        title: "Venus",
-        description: "Budin banana",
-        price: 500,
-        thumbnail: "imagen",
-        code: "code2",
-        stock: 5
-    });
-
-    console.log({ segundoProducto }); 
-
-  
+    }
 
 }
 
+module.exports = ProductManager
 
-guardarProductos() */
+
+
+
+       
+
+               
+
+                    
+
+
+
+
+
+
+
+
+
+
+
+
 
 
